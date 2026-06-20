@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#7C6FE0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BabyTracker">
+<meta name="description" content="Registra el cuidado de tu bebé">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Baby Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+<!-- ONBOARDING -->
+<div id="screen-onboarding" class="screen active">
+  <div class="ob-wrap">
+    <div class="ob-baby">&#x1F476;</div>
+    <h1>Baby Tracker</h1>
+    <p>Registra cada momento del cuidado de tu beb&#233;.</p>
+    <label>Nombre del beb&#233;</label>
+    <input type="text" id="ob-name" placeholder="ej. Sof&#237;a" autocomplete="off">
+    <label>Fecha de nacimiento</label>
+    <input type="date" id="ob-dob">
+    <label>Mam&#225; y pap&#225;</label>
+    <input type="text" id="ob-parent" placeholder="ej. Carlos y Valeria" autocomplete="off">
+    <button class="btn-primary btn-full" onclick="finishOnboarding()" style="margin-top:24px">Comenzar &#8594;</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="screen-main" class="screen">
+  <header id="appHeader">
+    <div class="h-left">
+      <div class="h-av" id="hAv">&#x1F476;</div>
+      <div>
+        <div class="h-name" id="hName">Baby Tracker</div>
+        <div class="h-age" id="hAge">Configura el perfil</div>
+      </div>
+    </div>
+    <button class="icon-btn" onclick="showScreen('settings')" aria-label="Configuraci&#243;n">&#9881;&#65039;</button>
+  </header>
+
+  <main id="mainContent">
+    <div id="view-home" class="view active">
+
+      <!-- BANNER TETERO — inicio/fin de toma -->
+      <div class="action-banner feed-banner" id="feedBanner">
+        <div class="ab-icon">&#x1F37C;</div>
+        <div class="ab-info">
+          <div class="ab-title" id="feedTitle">Tetero / Toma</div>
+          <div class="ab-detail" id="feedDetail">Sin registros hoy</div>
+        </div>
+        <button class="ab-btn feed-btn" id="feedBtn" onclick="toggleFeed()">Iniciar toma</button>
+      </div>
+
+      <!-- BANNER SUEÑO — inicio/fin -->
+      <div class="action-banner sleep-banner awake" id="sleepCard">
+        <div class="s-dot" id="sDot"></div>
+        <div class="ab-info">
+          <div class="ab-title" id="sStatus">Despierto</div>
+          <div class="ab-detail" id="sDetail">Toca para registrar que se durmi&#243;</div>
+        </div>
+        <button class="ab-btn sleep-btn" id="sBtn" onclick="toggleSleep()">Durmi&#243;</button>
+      </div>
+
+      <div class="sec-label">Registrar</div>
+      <div class="q-grid">
+        <button class="q-card" onclick="openModal('diaper')">
+          <span class="q-em">&#x1F9F7;</span>
+          <span class="q-nm">Pa&#241;al</span>
+          <span class="q-ag" id="ql-diaper">Sin registros</span>
+        </button>
+        <button class="q-card" onclick="openModal('food')">
+          <span class="q-em">&#x1F963;</span>
+          <span class="q-nm">Comida</span>
+          <span class="q-ag" id="ql-food">Pesta&#241;a Comidas</span>
+        </button>
+        <button class="q-card" onclick="openModal('exercise')">
+          <span class="q-em">&#x1F938;</span>
+          <span class="q-nm">Ejercicio</span>
+          <span class="q-ag" id="ql-exercise">Sin registros</span>
+        </button>
+        <button class="q-card" onclick="openModal('symptom')">
+          <span class="q-em">&#x1F321;&#xFE0F;</span>
+          <span class="q-nm">S&#237;ntoma</span>
+          <span class="q-ag" id="ql-symptom">Sin registros</span>
+        </button>
+      </div>
+
+      <div class="sec-label">Hoy</div>
+      <div class="log-list" id="recentLog">
+        <div class="empty">&#x1F44B; Nada registrado hoy.<br>&#161;Toca un bot&#243;n para empezar!</div>
+      </div>
+    </div>
+
+    <!-- FOOD -->
+    <div id="view-food" class="view">
+      <div class="meal-row">
+        <button class="m-chip active" data-m="breakfast" onclick="selMeal('breakfast')">&#x1F305; Desayuno</button>
+        <button class="m-chip" data-m="lunch" onclick="selMeal('lunch')">&#x2600;&#xFE0F; Almuerzo</button>
+        <button class="m-chip" data-m="dinner" onclick="selMeal('dinner')">&#x1F319; Cena</button>
+      </div>
+      <button class="add-food-btn" onclick="openModal('food')">
+        <span id="mealIconBig">&#x1F305;</span>
+        <span id="mealLabelBig">Registrar desayuno</span>
+        <span class="afb-plus">+</span>
+      </button>
+      <div class="sec-label">Comidas de hoy</div>
+      <div class="log-list" id="foodLog"><div class="empty">Sin comidas hoy.</div></div>
+      <div class="tips-section">
+        <div class="sec-label" style="margin-top:20px">&#x1F4A1; Gu&#237;a para 9 meses</div>
+        <div class="tip-card">
+          <div class="tip-header" onclick="toggleTip('t1')"><span class="tip-emoji">&#x1F373;</span><span class="tip-title">Desayunos recomendados</span><span class="tip-arrow" id="ta-t1">&#x25BC;</span></div>
+          <div class="tip-body" id="tb-t1">
+            <div class="tip-item"><span class="tip-tag">&#x2713; Ideal</span> <strong>Avena cocida</strong> &#8212; sin az&#250;car, con pl&#225;tano machacado.</div>
+            <div class="tip-item"><span class="tip-tag g">&#x1F955;</span> <strong>Yogur natural + fruta</strong> &#8212; sin az&#250;car. Prote&#237;na excelente.</div>
+            <div class="tip-item"><span class="tip-tag g">&#x1F373;</span> <strong>Huevo revuelto suave</strong> &#8212; bien cocido, trozos peque&#241;os.</div>
+            <div class="tip-item"><span class="tip-tag o">&#x26A0;&#xFE0F; Evitar</span> Miel, leche de vaca, sal, jugos azucarados.</div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-header" onclick="toggleTip('t2')"><span class="tip-emoji">&#x1F957;</span><span class="tip-title">Almuerzos y cenas</span><span class="tip-arrow" id="ta-t2">&#x25BC;</span></div>
+          <div class="tip-body" id="tb-t2">
+            <div class="tip-item"><span class="tip-tag">&#x2713; Ideal</span> <strong>Pur&#233; de papa + pollo</strong> &#8212; desmenuzado, sin sal.</div>
+            <div class="tip-item"><span class="tip-tag">&#x2713; Ideal</span> <strong>Lentejas aplastadas</strong> &#8212; hierro y prote&#237;na, con zanahoria.</div>
+            <div class="tip-item"><span class="tip-tag g">&#x1F41F;</span> <strong>Pescado blanco</strong> &#8212; sin espinas, al vapor.</div>
+            <div class="tip-item"><span class="tip-tag g">&#x1F966;</span> <strong>Br&#243;coli / zapallo</strong> &#8212; blandos, con aceite de oliva.</div>
+            <div class="tip-item"><span class="tip-tag o">&#x26A0;&#xFE0F; Evitar</span> Sal, frituras, embutidos, az&#250;car.</div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-header" onclick="toggleTip('t3')"><span class="tip-emoji">&#x1F347;</span><span class="tip-title">Frutas y snacks</span><span class="tip-arrow" id="ta-t3">&#x25BC;</span></div>
+          <div class="tip-body" id="tb-t3">
+            <div class="tip-item"><span class="tip-tag g">&#x2705;</span> Pl&#225;tano, mango, pera, papaya &#8212; blandos o machacados.</div>
+            <div class="tip-item"><span class="tip-tag g">&#x2705;</span> Aguacate &#8212; cremoso, rico en grasas buenas.</div>
+            <div class="tip-item"><span class="tip-tag o">&#x26A0;&#xFE0F; Precauci&#243;n</span> Uvas (cortar en cuartos), fresas (posible alergia).</div>
+            <div class="tip-item"><span class="tip-tag o">&#x26A0;&#xFE0F; Evitar</span> Fr&#250;tos secos enteros, jugos embotellados, dulces.</div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-header" onclick="toggleTip('t4')"><span class="tip-emoji">&#x23F0;</span><span class="tip-title">Horario sugerido</span><span class="tip-arrow" id="ta-t4">&#x25BC;</span></div>
+          <div class="tip-body" id="tb-t4">
+            <div class="tip-item"><strong>7&#8211;8am:</strong> Pecho/tetero + desayuno (2&#8211;3 cucharadas).</div>
+            <div class="tip-item"><strong>10am:</strong> Snack de fruta (1&#8211;2 cucharadas).</div>
+            <div class="tip-item"><strong>12&#8211;1pm:</strong> Almuerzo (4&#8211;6 cucharadas).</div>
+            <div class="tip-item"><strong>3&#8211;4pm:</strong> Pecho/tetero + snack.</div>
+            <div class="tip-item"><strong>6&#8211;7pm:</strong> Cena (3&#8211;5 cucharadas).</div>
+            <div class="tip-item"><strong>Antes de dormir:</strong> Pecho/tetero.</div>
+            <div class="tip-item"><span class="tip-tag g">Tip</span> El pecho/tetero sigue siendo lo principal. &#161;La comida s&#243;lida es exploraci&#243;n!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MILESTONES -->
+    <div id="view-milestones" class="view">
+      <div class="ms-prog-card">
+        <div class="ms-prog-info">
+          <div class="ms-prog-lbl" id="msProgLbl">0 de 0 hitos logrados</div>
+          <div class="ms-track"><div class="ms-fill" id="msFill" style="width:0%"></div></div>
+        </div>
+        <div class="ms-pct" id="msPct">0%</div>
+      </div>
+      <div id="msList"></div>
+      <button class="add-ms-btn" onclick="openModal('milestone')">+ Agregar hito personalizado</button>
+    </div>
+
+    <!-- STATS -->
+    <div id="view-stats" class="view">
+      <div class="stats-date" id="statsDate"></div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-icon">&#x1F37C;</div><div class="stat-val" id="st-bottle">0</div><div class="stat-lbl">Tomas</div></div>
+        <div class="stat-card"><div class="stat-icon">&#x1F9F7;</div><div class="stat-val" id="st-diaper">0</div><div class="stat-lbl">Pa&#241;ales</div></div>
+        <div class="stat-card"><div class="stat-icon">&#x1F963;</div><div class="stat-val" id="st-food">0</div><div class="stat-lbl">Comidas</div></div>
+        <div class="stat-card"><div class="stat-icon">&#x1F938;</div><div class="stat-val" id="st-exercise">0</div><div class="stat-lbl">Ejercicios</div></div>
+      </div>
+      <div class="big-stat"><div><div class="bs-lbl">&#x1F634; Sue&#241;o total hoy</div><div class="bs-val" id="st-sleep">0h 0min</div></div></div>
+      <div class="big-stat"><div><div class="bs-lbl">&#x1F37C; Tiempo total de tomas</div><div class="bs-val" id="st-feed-time">&#8212;</div></div></div>
+      <div class="big-stat"><div><div class="bs-lbl">&#x2728; Hitos logrados</div><div class="bs-val" id="st-ms">0</div></div></div>
+      <div class="sec-label" style="margin-top:20px">Exportar y respaldo</div>
+      <div class="export-card">
+        <button class="exp-btn" onclick="exportPDF()"><span class="exp-btn-icon">&#x1F4C4;</span> Reporte PDF para pediatra</button>
+        <button class="exp-btn" onclick="exportJSON()"><span class="exp-btn-icon">&#x1F4BE;</span> Descargar respaldo (.json)</button>
+        <label class="exp-btn" style="cursor:pointer"><span class="exp-btn-icon">&#x1F4C2;</span> Restaurar respaldo<input type="file" accept=".json" onchange="importJSON(event)" style="display:none"></label>
+        <button class="exp-btn" onclick="showDriveInfo()"><span class="exp-btn-icon">&#x1F4C1;</span> Sincronizar con Google Drive</button>
+      </div>
+    </div>
+
+  </main>
+
+  <nav id="bottomNav">
+    <button class="nav-btn active" data-v="home" onclick="switchView('home')"><span class="ni">&#x1F3E0;</span><span>Inicio</span></button>
+    <button class="nav-btn" data-v="food" onclick="switchView('food')"><span class="ni">&#x1F963;</span><span>Comidas</span></button>
+    <button class="nav-btn" data-v="milestones" onclick="switchView('milestones')"><span class="ni">&#x2B50;</span><span>Hitos</span></button>
+    <button class="nav-btn" data-v="stats" onclick="switchView('stats')"><span class="ni">&#x1F4CA;</span><span>Resumen</span></button>
+  </nav>
+</div>
+
+<!-- SETTINGS -->
+<div id="screen-settings" class="screen">
+  <div class="settings-header">
+    <button class="back-btn" onclick="showScreen('main')">&#8592; Volver</button>
+    <h2>Perfil</h2>
+  </div>
+  <div class="settings-body">
+    <div class="settings-avatar" id="settingsAvatar">&#x1F476;</div>
+    <div class="settings-card">
+      <div class="settings-section-title">Informaci&#243;n del beb&#233;</div>
+      <label>Nombre</label><input type="text" id="s-name">
+      <label>Fecha de nacimiento</label><input type="date" id="s-dob">
+      <label>Peso (kg)</label><input type="number" id="s-weight" step="0.1">
+      <label>Talla (cm)</label><input type="number" id="s-height">
+      <label>Grupo sangu&#237;neo</label><input type="text" id="s-blood" placeholder="ej. O+">
+      <label>Pediatra</label><input type="text" id="s-doctor">
+      <label>Tel&#233;fono pediatra</label><input type="tel" id="s-doctorphone">
+    </div>
+    <div class="settings-card">
+      <div class="settings-section-title">Cuidadores</div>
+      <label>Nombres</label><input type="text" id="s-parents" placeholder="ej. Carlos y Valeria">
+    </div>
+    <button class="btn-primary btn-full" onclick="saveSettings()">Guardar cambios</button>
+    <button class="btn-danger btn-full" onclick="confirmReset()">Borrar todos los datos</button>
+  </div>
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <h3 id="modalTitle">Registrar</h3>
+      <button class="modal-close-btn" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveEntry()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
