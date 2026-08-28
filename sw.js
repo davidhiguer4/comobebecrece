@@ -1,4 +1,4 @@
-var CACHE='babytracker-v4';
+var CACHE='babytracker-v5';
 var ASSETS=['/','/index.html','/style.css','/app.js','/manifest.json'];
 
 self.addEventListener('install',function(e){
